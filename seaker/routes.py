@@ -1,7 +1,8 @@
 from flask import render_template, redirect, url_for, flash
 
-from seaker import app
+from seaker import app, db, bcrypt
 from seaker.forms import RegistrationForm, LoginForm
+from seaker.models import User
 
 posts = [
     {
@@ -33,8 +34,12 @@ def about():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        flash(f'Account created for {form.username.data}!', 'success')
-        return redirect(url_for('home'))
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        db.session.add(user)
+        db.session.commit()
+        flash(f'Your account has been created! You are now able to login', 'success')
+        return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
 
