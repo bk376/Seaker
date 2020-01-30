@@ -1,9 +1,7 @@
-from flask import Flask, render_template, url_for, flash, redirect
-from forms import RegistrationForm, LoginForm
+from flask import render_template, redirect, url_for, flash
 
-app = Flask(__name__)
-
-app.config['SECRET_KEY'] = '63362f584ff66d1bda0281f6520bc914'
+from seaker import app
+from seaker.forms import RegistrationForm, LoginForm
 
 posts = [
     {
@@ -51,6 +49,3 @@ def login():
             flash("Login unsuccessful. Please check username and password", 'danger')
     return render_template('login.html', title='Login', form=form)
 
-
-if __name__ == '__main__':
-    app.run(debug=True)
